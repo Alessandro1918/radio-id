@@ -1,0 +1,15 @@
+{
+  "name": "radio-id",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "author": "Ale B. C.",
+  "license": "ISC",
+  "dependencies": {
+    "node-shazam": "^1.2.3"
+  },
+  "type": "module"
+}
