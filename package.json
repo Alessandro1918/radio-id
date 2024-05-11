@@ -1,0 +1,19 @@
+{
+  "name": "radio-id",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "author": "Ale B. C.",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "node-shazam": "^1.2.3"
+  },
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
