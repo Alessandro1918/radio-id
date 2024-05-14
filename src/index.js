@@ -26,7 +26,21 @@ async function recognise(filename) {
 
   const response = await shazam.recognise(filename)
   // fs.rmSync(tmpDir, { recursive: true, force: true })    //no need to remove "/tmp" dir
-  return response
+  
+  // return response
+  var data = {}
+  if (response != null) {
+    data["timestamp"] = response["timestamp"]
+    data["title"] = response["track"]["title"]
+    data["artist"] = response["track"]["subtitle"]
+    data["album"] = {}
+    data["album"]["cover"] = response["track"]["images"]["coverart"]
+    const metadtataAlbumTitle = response.track.sections[0].metadata.filter(e => e.title === "Album")
+    data["album"]["title"] = metadtataAlbumTitle.length > 0 ? metadtataAlbumTitle[0].text : "-"
+    const metadtataAlbumYear = response.track.sections[0].metadata.filter(e => e.title === "Released")
+    data["album"]["year"] = metadtataAlbumYear.length > 0 ? metadtataAlbumYear[0].text : "-"
+  }
+  return data
 }
 
 //Record audio file from stream's URL
