@@ -12,35 +12,31 @@ const PORT = process.env.PORT || 4000
 //OBS:
 //NODE_ENV = DEV: temp folder is "./tmp"
 //NODE_ENV = PROD: temp folder is "/tmp"
-//(4 changes from "./" to "/" thru all the code)
+//(3 changes from "./" to "/" thru all the code)
 
 //Test
 app.get("/", (req, res) => {return res.send("Hello, world!")})
 
-//Recognise song based on audio file inside "temp" dir
-app.get("/audio/:filename", async (req, res) => {
-
+async function recognise(filename) {
   // fs.mkdirSync(tmpDir, { recursive: true })    //no need to init "/tmp" dir
 
   // const srcPath = path.join(process.cwd(), "audio_samples", `${req.params.filename}`)  //path = "./audio_samples/003.avi"
-  const filePath = path.join("/tmp", `${req.params.filename}`)
+  // const filePath = path.join("./tmp", `${req.params.filename}`)     //function arg already has "/tmp" in the path
   // fs.copyFileSync(srcPath, filePath)           //This was here just to make sure I could read from the "/tmp" (or "./tmp") dir
 
-  shazam.recognise(filePath)
-    .then(response => {
-      // fs.rmSync(tmpDir, { recursive: true, force: true })    //no need to remove "/tmp" dir
-      return res.json(response)
-    })
-})
+  const response = await shazam.recognise(filename)
+  // fs.rmSync(tmpDir, { recursive: true, force: true })    //no need to remove "/tmp" dir
+  return response
+}
 
 //Record audio file from stream's URL
-app.get("/record/:streamUrl", (req, res) => {
+app.get("/recognise/:stream", (req, res) => {
 
   //Setup recorder:
   var rec = new Recorder.Recorder({
-    url: req.params.streamUrl,  //stream = "https://cloud2.cdnseguro.com:20000/;" (Kiss FM)
+    url: req.params.stream,  //stream = "https://cloud2.cdnseguro.com:20000/;" (Kiss FM)
     timeLimit: 5, // time in seconds for each segmented audio file
-    folder: "/tmp/records",
+    folder: "./tmp/records",
     directoryPathFormat: "YYYY-MM-DD",
     fileNameFormat: "YYYY-MM-DD-HH-mm-ss",
     type: "audio",
@@ -53,16 +49,24 @@ app.get("/record/:streamUrl", (req, res) => {
       rec.stopRecording()
 
       //Convert ".avi" to ".m4a":
-      const pathFromRecord = path.join("/", rec.writeStream.spawnargs[rec.writeStream.spawnargs.length -1])  //path = tmp/records/2024-05-13/audio/2024-05-13-02-04-59.avi'
+      const pathFromRecord = path.join("./", rec.writeStream.spawnargs[rec.writeStream.spawnargs.length -1])  //path = tmp/records/2024-05-13/audio/2024-05-13-02-04-59.avi'
       // const pathAudioToId = pathFromRecord.replace("avi", "m4a")     //save file to the same dir
       const pathAudioToId = path.join(                                  //save file to "/tmp" dir
-        "/tmp", 
+        "./tmp", 
         pathFromRecord.split("/audio")[1].replace("avi", "m4a")
       )
+
+      //After conversion is finished, recognise file
       Ffmpeg(pathFromRecord)
         .on("progress", function (progress) {console.log("Processing: " + progress.percent + "% done")})
         .on("error", function (err) {console.log("An error occurred: " + err.message)})
-        .on("end", function () {console.log("Processing finished !")})
+        .on("end", async function () {
+          console.log("Processing finished !")
+          // const data = await recognise("./tmp/2024-05-13-02-29-50.m4a")   //Def Leppard - Foolin
+          // const data = await recognise("./tmp/2024-05-13-22-00-27.m4a")   //null
+          const data = await recognise(pathAudioToId)                     //current
+          return res.json(data)
+        })
         .save(pathAudioToId)
 
       rec = null
