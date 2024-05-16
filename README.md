@@ -1,7 +1,6 @@
 # radio-id
 
 ## 🚀 Projeto
-🚧 Em construção 🚧</br></br>
 Identifique a música que está tocando agora em sua estação de rádio favorita!
 
 ## 🧊 Cool features:
@@ -17,9 +16,9 @@ Identifique a música que está tocando agora em sua estação de rádio favorit
 
 ### ▶️ Rodando o App:
 ```bash
-  $ cd radio-id             #change to that directory
-  $ npm install             #download dependencies to node_modules
-  $ npm run dev             #start the project
+  $ cd radio-id   #change to that directory
+  $ npm install   #download dependencies to node_modules
+  $ npm run dev   #start the project
 ```
 
 ### 📻 Rádios:
