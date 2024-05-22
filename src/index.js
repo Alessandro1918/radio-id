@@ -30,6 +30,7 @@ async function recognise(filename) {
   // return response
   var data = {}
   if (response != null) {
+    console.log("Track found!\n")
     data["timestamp"] = response["timestamp"]
     data["title"] = response["track"]["title"]
     data["artist"] = response["track"]["subtitle"]
@@ -39,6 +40,8 @@ async function recognise(filename) {
     data["album"]["title"] = metadtataAlbumTitle.length > 0 ? metadtataAlbumTitle[0].text : "-"
     const metadtataAlbumYear = response.track.sections[0].metadata.filter(e => e.title === "Released")
     data["album"]["year"] = metadtataAlbumYear.length > 0 ? metadtataAlbumYear[0].text : "-"
+  } else {
+    console.log("Track not found\n")
   }
   return data
 }
@@ -59,10 +62,10 @@ app.get("/recognise/:stream", (req, res) => {
   rec.startRecording()
 
   setTimeout(() => {
-      console.log("Stopping Recording")
+      console.log("Stopping recording")
       rec.stopRecording()
 
-      //Convert ".avi" to ".m4a":
+      //Setup ".avi" to ".m4a" conversion:
       const pathFromRecord = path.join("./", rec.writeStream.spawnargs[rec.writeStream.spawnargs.length -1])  //path = tmp/records/2024-05-13/audio/2024-05-13-02-04-59.avi'
       // const pathAudioToId = pathFromRecord.replace("avi", "m4a")     //save file to the same dir
       const pathAudioToId = path.join(                                  //save file to "/tmp" dir
@@ -70,20 +73,27 @@ app.get("/recognise/:stream", (req, res) => {
         pathFromRecord.split("/audio")[1].replace("avi", "m4a")
       )
 
-      //After conversion is finished, recognise file
+      //Start conversion. After finished, recognise file
       Ffmpeg(pathFromRecord)
         .on("progress", function (progress) {console.log("Processing: " + progress.percent + "% done")})
-        .on("error", function (err) {console.log("An error occurred: " + err.message)})
+        .on("error", function (err) {
+          console.log("An error occurred: " + err.message)
+          return res.status(500).send("An error has occurred; please try again")
+        })
         .on("end", async function () {
-          console.log("Processing finished !")
+          console.log("Processing finished!")
           // const data = await recognise("./tmp/2024-05-13-02-29-50.m4a")   //Def Leppard - Foolin
           // const data = await recognise("./tmp/2024-05-13-22-00-27.m4a")   //null
           const data = await recognise(pathAudioToId)                     //current
-          return res.json(data)
+          if (Object.keys(data).length == 0) {
+            return res.status(400).send("Track not found")
+          } else {
+            return res.status(200).json(data)
+          }
         })
         .save(pathAudioToId)
 
-      rec = null
+        rec = null
 
   }, 5*1000)  //ms
 })
