@@ -49,7 +49,7 @@ app.get("/recognise/:stream", (req, res) => {
   var rec = new Recorder.Recorder({
     url: req.params.stream,  //stream = "https://cloud2.cdnseguro.com:20000/;" (Kiss FM)
     timeLimit: 6, // time in seconds for each segmented audio file
-    folder: "tmp/records",
+    folder: "/tmp/records",
     directoryPathFormat: "YYYY-MM-DD",
     fileNameFormat: "YYYY-MM-DD-HH-mm-ss",
     type: "audio",
@@ -64,7 +64,7 @@ app.get("/recognise/:stream", (req, res) => {
 
     //Setup ".avi" to ".m4a" conversion:
     // const pathAvi = "./tmp/records/2024-05-24/audio/2024-05-24-15-32-16.avi"
-    const pathAvi = rec.writeStream.spawnargs[rec.writeStream.spawnargs.length -1]  //path = ./tmp/records/2024-05-13/audio/2024-05-13-02-04-59.avi
+    const pathAvi = "/" + rec.writeStream.spawnargs[rec.writeStream.spawnargs.length -1]  //path = ./tmp/records/2024-05-13/audio/2024-05-13-02-04-59.avi
     const pathM4a = pathAvi.replace("avi", "m4a")
     // const pathLevels = pathAvi.split("/")
     // const filenameAvi = pathLevels[pathLevels.length -1]
