@@ -1,23 +1,36 @@
 //Step 4 — Processing Media With ffmpeg.wasm
 //https://www.digitalocean.com/community/tutorials/how-to-build-a-media-processing-api-in-node-js-with-express-and-ffmpeg-wasm
 
+//Temp dir notation:
+// "./tmp/records": localhost
+//  "/tmp/records": vercel
+//   "tmp/records": localhost
+
+//Requires:
+// require("dotenv").config()
+// const express = require("express")
+//node-shazam   //doesn"t have a "require" option
+// var fs = require("fs")
+// var path = require("path")
+// const Recorder = require("node-rtsp-recorder")
+// const ffmpeg = require("fluent-ffmpeg")
+// const ffmpegInstaller = require("@ffmpeg-installer/ffmpeg")
+// ffmpeg.setFfmpegPath(ffmpegInstaller.path)
+
+//Imports (package.json: "type": "module"):
+// import 'dotenv/config'
 import express from "express"
 import { Shazam } from "node-shazam"
-import * as fs from "fs"
+// import * as fs from "fs"
 // import * as path from "path"
-import Recorder from "node-rtsp-recorder"
-import Ffmpeg from "fluent-ffmpeg"       //V1 - https://www.npmjs.com/package/fluent-ffmpeg
+// import Recorder from "node-rtsp-recorder"
+import ffmpeg from "fluent-ffmpeg"       //V1 - https://www.npmjs.com/package/fluent-ffmpeg
+import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 const app = express()
 const shazam = new Shazam()
 const PORT = process.env.PORT || 4000
-
-//Returns the size of a file, in bytes
-function getFilesize(filepath) {
-  var stats = fs.statSync(filepath)
-  var fileSizeInBytes = stats.size
-  return fileSizeInBytes
-}
 
 //Uses "node-shazam" package to recognise data (artist, song title) from an audio file
 async function recognise(filepath) {
@@ -42,64 +55,43 @@ async function recognise(filepath) {
 //Test
 app.get("/", (req, res) => {return res.send("Hello, world!")})
 
-//Record audio file from stream's URL
+//Record audio file from stream's URL, and try to recognise the music playing on it
 app.get("/recognise/:stream", (req, res) => {
 
-  //Setup recorder:
-  var rec = new Recorder.Recorder({
-    url: req.params.stream,  //stream = "https://cloud2.cdnseguro.com:20000/;" (Kiss FM)
-    timeLimit: 6, // time in seconds for each segmented audio file
-    folder: "/tmp/records",
-    directoryPathFormat: "YYYY-MM-DD",
-    fileNameFormat: "YYYY-MM-DD-HH-mm-ss",
-    type: "audio",
-  })
+  const pathRecord = "/tmp/record.m4a"
 
-  console.log('') //new line
-  rec.startRecording()
+  ffmpeg()
+    .input(req.params.stream)         //stream = "https://cloud2.cdnseguro.com:20000/;" (Kiss FM)
+    // .input("./tmp/records/2024-05-25/audio/2024-05-25-16-55-51.avi")
+    
+    .duration(5)
 
-  setTimeout(async () => {
-    console.log("Stopping recording")
-    rec.stopRecording()
+    .save(pathRecord)
 
-    //Setup ".avi" to ".m4a" conversion:
-    // const pathAvi = "./tmp/records/2024-05-24/audio/2024-05-24-15-32-16.avi"
-    const pathAvi = "/" + rec.writeStream.spawnargs[rec.writeStream.spawnargs.length -1]  //path = ./tmp/records/2024-05-13/audio/2024-05-13-02-04-59.avi
-    const pathM4a = pathAvi.replace("avi", "m4a")
-    // const pathLevels = pathAvi.split("/")
-    // const filenameAvi = pathLevels[pathLevels.length -1]
-    // const filenameM4a = filenameAvi.replace("avi", "m4a")
-    rec = null
+    // .output("test.mp3")
+    // .run()
 
-    const fileSize = getFilesize(pathAvi)
-    console.log(`Record: ${fileSize/1024} kB`)
-    if (fileSize == 0) {
-      console.log("Recorder could not save audio file")
-      return res.status(500).send("An error has occurred during recording; please try again")
-    } else {
-      //Start conversion. After finished, recognise file
+    // .outputOptions("-t 5")
+    // .save("test.m4a")
 
-      //V1 - fluent-ffmpeg
-      Ffmpeg(pathAvi)
-      .save(pathM4a)
-      .on("progress", function (progress) {console.log("Processing: " + progress.percent + "% done")})
-      .on("error", function (err) {
-        console.log("An error occurred: " + err.message)
-        return res.status(500).send("An error has occurred during recognition; please try again")
-      })
-      .on("end", async function () {
-        console.log("Processing finished!")
-        const data = await recognise(pathM4a)
-        if (Object.keys(data).length == 0) {
-          console.log("Track not found :(")
-          return res.status(400).send("Track not found")
-        } else {
-          console.log("Track found!")
-          return res.status(200).json(data)
-        }
-      })
-    }
-  }, 5*1000)  //setTimeout < Recorder.timeLimit. Else, it will record multiple files in the time period
+    .on("start", function(command) {console.log("Spawned Ffmpeg with command: " + command)})
+    // .on("progress", function (progress) {console.log("Processing: " + progress.percent + "% done")})
+    .on("error", function (err) {
+      console.log("An error occurred: " + err.message)
+      return res.status(500).send("An error has occurred during recognition; please try again")
+    })
+    .on("end", async function () {
+      console.log("Processing finished!")
+
+      const data = await recognise(pathRecord)
+      if (Object.keys(data).length == 0) {
+        console.log("Data not found :(")
+        return res.status(400).send("Data not found")
+      } else {
+        console.log("Data found!")
+        return res.status(200).json(data)
+      }
+    })
 })
 
 app.listen(PORT, () => console.log(`App running on http://localhost:${PORT}`))
