@@ -31,7 +31,7 @@ Esse projeto utiliza o framework [ffmpeg](https://ffmpeg.org), ferramenta que de
   # Docker - with Dockerfile:
   $ docker build -t name-of-docker-image .             #build the image
   $ docker run -it -p 4000:4000 name-of-docker-image   #run the container - foregroud
-  $ docker run -d -p 4000:4000 name-of-docker-image    #run the container - backfround
+  $ docker run -d -p 4000:4000 name-of-docker-image    #run the container - background
 ```
 
 ### 💻 Rotas HTTP:
@@ -85,7 +85,7 @@ Teste:
 - <a href="https://tunein.com/radio/RADIO-FOX-ROCK-879-s120826/">
     <img 
       width="75px"
-      alt="logo_89_a_radio_rock" 
+      alt="logo_fox_rock" 
       src="https://cdn-profiles.tunein.com/s120826/images/logod.png?t=636565167687330000"
     />
     Fox Rock - Sorocaba, BR
