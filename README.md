@@ -30,7 +30,7 @@ Esse projeto utiliza o framework [ffmpeg](https://ffmpeg.org), ferramenta que de
 
   # Docker - with Dockerfile:
   $ docker build -t name-of-docker-image .             #build the image
-  $ docker run -it -p 4000:4000 name-of-docker-image   #run the container - foregroud
+  $ docker run -it -p 4000:4000 name-of-docker-image   #run the container - foreground
   $ docker run -d -p 4000:4000 name-of-docker-image    #run the container - background
 ```
 
