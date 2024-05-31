@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+
+  main:
+    #Image upon I will build my container. No need to customize image name, else I would have to tell the name of the original image somewhere else.
+    image: node:bullseye
+    build: .
+    working_dir: /usr/app
+    #Run package.json script: "npm install && nodemon src/server.js"
+    command: npm run compose_dev
+    #Folders of my local directory the container will have access (give root access to read the package.json file).
+    volumes:
+      - .:/usr/app
+      - /usr/app/node_modules
+    #But I still have to expose (publish) the containers ports:
+    ports:
+      - 4000:4000
