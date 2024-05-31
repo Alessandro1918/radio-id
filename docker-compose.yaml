@@ -4,7 +4,7 @@ services:
 
   main:
     #Image upon I will build my container. No need to customize image name, else I would have to tell the name of the original image somewhere else.
-    image: node:alpine
+    image: node:bullseye
     build: .
     working_dir: /usr/app
     #Run package.json script: "npm install && nodemon src/server.js"

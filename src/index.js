@@ -12,7 +12,6 @@
 //node-shazam   //doesn"t have a "require" option
 // var fs = require("fs")
 // var path = require("path")
-// const Recorder = require("node-rtsp-recorder")
 // const ffmpeg = require("fluent-ffmpeg")
 // const ffmpegInstaller = require("@ffmpeg-installer/ffmpeg")
 // ffmpeg.setFfmpegPath(ffmpegInstaller.path)
@@ -23,10 +22,13 @@ import express from "express"
 import { Shazam } from "node-shazam"
 // import * as fs from "fs"
 // import * as path from "path"
-// import Recorder from "node-rtsp-recorder"
 import ffmpeg from "fluent-ffmpeg"       //V1 - https://www.npmjs.com/package/fluent-ffmpeg
 import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"
-ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+ffmpeg.setFfmpegPath(ffmpegInstaller.path)
+
+// console.log(ffmpegInstaller.path)
+// console.log(ffmpegInstaller.url)
+// console.log(ffmpegInstaller.version)
 
 const app = express()
 const shazam = new Shazam()
@@ -58,7 +60,7 @@ app.get("/", (req, res) => {return res.send("Hello, world!")})
 //Record audio file from stream's URL, and try to recognise the music playing on it
 app.get("/recognise/:stream", (req, res) => {
 
-  const pathRecord = "/tmp/record.m4a"
+  const pathRecord = "./tmp/record.m4a"
 
   ffmpeg()
     .input(req.params.stream)         //stream = "https://cloud2.cdnseguro.com:20000/;" (Kiss FM)
