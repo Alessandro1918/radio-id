@@ -3,6 +3,15 @@
 ## 🚀 Projeto
 Identifique a música que está tocando agora em sua estação de rádio favorita!
 
+<div align="center">
+  <img 
+    width="50%" 
+    alt="radio-id"
+    title="radio-id" 
+    src="/github_assets/radio-id.jpeg"
+  />
+</div>
+
 ## 🧊 Cool features:
 - Identificação direto do stream da rádio, sem uso do microfone do dispositivo!
 
