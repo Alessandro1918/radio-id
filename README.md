@@ -44,18 +44,29 @@ Esse projeto utiliza o framework [ffmpeg](https://ffmpeg.org), ferramenta que de
 ```
 
 ### 💻 Rotas HTTP:
-#### baseURL: <code>http://localhost:4000</code>
-#### GET <code>{baseURL}/recognise/{streamURLencodedAsURI}</code>
+#### baseURL Dev: <code>http://localhost:4000</code>
+#### baseURL Prod: <code>https://radio-id-service-225963718403.southamerica-east1.run.app</code>
+#### GET <code>{baseURL}/api/v1/id/{query}</code>
 #### Output:
 ```json
 {
   "timestamp":1717126464818,
-  "title":"Space Truckin'",
-  "artist":"Deep Purple",
-  "album":{
-    "cover":"https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/09/70/d0/0970d0fa-a46d-049b-125c-d131171fce1c/603497877393.jpg/400x400cc.jpg",
-    "title":"Machine Head",
-    "year":"1972",
+  "track": {
+    "title": "Space Truckin'",
+    "artist": "Deep Purple",
+    "album": {
+      "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/09/70/d0/0970d0fa-a46d-049b-125c-d131171fce1c/603497877393.jpg/400x400cc.jpg",
+      "title": "Machine Head",
+      "year": "1972",
+    }
+  },
+  "radio": {
+    "name": "Kiss FM - 92.5",
+    "state": "São Paulo",
+    "countrycode": "BR",
+    "stream": "https://26593.live.streamtheworld.com/RADIO_KISSFM_ADP.aac",
+    "site": "https://kissfm.com.br/",
+    "icon": "https://kissfm.com.br/wp-content/uploads/2024/05/KISSFMSP.svg",
   }
 }
 ```
@@ -69,12 +80,10 @@ Esse projeto utiliza o framework [ffmpeg](https://ffmpeg.org), ferramenta que de
       alt="logo_kiss_fm" 
       src="https://cdn-profiles.tunein.com/s6165/images/logod.png?t=636927382740000000"
     />
-    Kiss FM - São Paulo, BR
+    Kiss FM - São Paulo, BR 🇧🇷
   </a>
-Stream: <code>https://cloud2.cdnseguro.com:20000/;</code></br>
-Teste: 
-[Dev](http://localhost:4000/recognise/https%3A%2F%2Fcloud2.cdnseguro.com%3A20000%2F%3B) | 
-[Prod](https://radio-id-service-3qh6bgqgpq-rj.a.run.app/recognise/https%3A%2F%2Fcloud2.cdnseguro.com%3A20000%2F%3B)
+Ouça agora: <code>https://tunein.com/radio/Kiss-FM-São-Paulo-1021-s6165/</code></br>
+Tocando agora:<code>[https://radio-id.app/api/v1/id/name=kiss_fm&countrycode=BR](https://radio-id-service-225963718403.southamerica-east1.run.app/api/v1/id/name=kiss_fm&countrycode=BR)</code>
 
 <!-- 89 -->
 - <a href="https://tunein.com/89fmaradiorock/">
@@ -83,12 +92,10 @@ Teste:
       alt="logo_89_a_radio_rock" 
       src="https://cdn-profiles.tunein.com/s85089/images/logod.jpg?t=638023933120000000"
     />
-    89 - A Rádio Rock - São Paulo, BR
+    89 - A Rádio Rock - São Paulo, BR 🇧🇷
   </a>
-Stream: <code>http://24373.live.streamtheworld.com/RADIO_89FMAAC.aac</code></br>
-Teste: 
-[Dev](http://localhost:4000/recognise/http%3A%2F%2F24373.live.streamtheworld.com%2FRADIO_89FMAAC.aac) | 
-[Prod](https://radio-id-service-3qh6bgqgpq-rj.a.run.app/recognise/http%3A%2F%2F24373.live.streamtheworld.com%2FRADIO_89FMAAC.aac)
+Ouça agora: <code>https://tunein.com/89fmaradiorock/</code></br>
+Tocando agora:<code>[https://radio-id.app/api/v1/id/name=89_fm&countrycode=BR](https://radio-id-service-225963718403.southamerica-east1.run.app/api/v1/id/name=89_fm&countrycode=BR)</code>
 
 <!-- FOX ROCK -->
 - <a href="https://tunein.com/radio/RADIO-FOX-ROCK-879-s120826/">
@@ -97,9 +104,19 @@ Teste:
       alt="logo_fox_rock" 
       src="https://cdn-profiles.tunein.com/s120826/images/logod.png?t=636565167687330000"
     />
-    Fox Rock - Sorocaba, BR
+    Fox Rock - Sorocaba, BR 🇧🇷
   </a>
-Stream: <code>https://bcast.brapostreaming.com.br/radio/8000/radio.mp3</code></br>
-Teste: 
-[Dev](http://localhost:4000/recognise/https%3A%2F%2Fbcast.brapostreaming.com.br%2Fradio%2F8000%2Fradio.mp3) | 
-[Prod](https://radio-id-service-3qh6bgqgpq-rj.a.run.app/recognise/https%3A%2F%2Fbcast.brapostreaming.com.br%2Fradio%2F8000%2Fradio.mp3)
+Ouça agora: <code>https://tunein.com/radio/RADIO-FOX-ROCK-879-s120826/</code></br>
+Tocando agora:<code>[https://radio-id.app/api/v1/id/name=fox_rock&countrycode=BR](https://radio-id-service-225963718403.southamerica-east1.run.app/api/v1/id/name=fox_rock&countrycode=BR)</code>
+
+<!-- RADIO CITY -->
+- <a href="https://tunein.com/radio/Radio-City-994-s14840/">
+    <img 
+      width="75px"
+      alt="logo_radio_city" 
+      src="https://cdn-profiles.tunein.com/s14840/images/logod.png?t=638874318730000000"
+    />
+    Radio City - Helsinki, Finlândia 🇫🇮
+  </a>
+Ouça agora: <code>https://tunein.com/radio/Radio-City-994-s14840/</code></br>
+Tocando agora:<code>[https://radio-id.app/api/v1/id/name=radio_city&countrycode=FI](https://radio-id-service-225963718403.southamerica-east1.run.app/api/v1/id/name=radio_city&countrycode=FI)</code>
