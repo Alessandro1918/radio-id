@@ -44,9 +44,11 @@ Esse projeto utiliza o framework [ffmpeg](https://ffmpeg.org), ferramenta que de
 ```
 
 ### 💻 Rotas HTTP:
-#### baseURL Dev: <code>http://localhost:4000</code>
-#### baseURL Prod: <code>https://radio-id-service-225963718403.southamerica-east1.run.app</code>
+baseURL Dev: <code>http://localhost:4000</code></br>
+baseURL Prod: <code>https://radio-id-service-225963718403.southamerica-east1.run.app</code></br>
+query: <code>name=radio_name&countrycode=XX</code> (Ex: <code>name=kiss_fm&countrycode=BR</code>)</br>
 #### GET <code>{baseURL}/api/v1/id/{query}</code>
+(OBS: Aguarde até 5s para a identificação da música)
 #### Output:
 ```json
 {
@@ -72,6 +74,7 @@ Esse projeto utiliza o framework [ffmpeg](https://ffmpeg.org), ferramenta que de
 ```
 
 ### 📻 Rádios:
+(OBS: Aguarde até 5s para a identificação da música)
 
 <!-- KISS FM -->
 - <a href="https://tunein.com/radio/Kiss-FM-São-Paulo-1021-s6165/">
