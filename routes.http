@@ -1,11 +1,7 @@
 ###
-//Test
+//Health check
 GET http://localhost:4000/
 
 ###
-//Recognise song based on audio file
-GET http://localhost:4000/audio/006.m4a
-
-###
-//Record audio file from stream's URL
-GET http://localhost:4000/recognise/https%3A%2F%2Fcloud2.cdnseguro.com%3A20000%2F%3B
+//Record audio file from stream's URL and try to recognise the song based on that audio file
+GET http://localhost:4000/api/v1/id/name=kiss_fm&countrycode=BR

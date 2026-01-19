@@ -57,7 +57,7 @@ async function search(query) {
     return radio
   } catch (err) {
     console.log("Search error: Could not find the radio")
-    throw new Error("Error: Could not find the radio")
+    throw new Error("404")  // Not found
   }
 }
 
@@ -90,9 +90,9 @@ function record(streamURL) {
       .on("start", function(command) {console.log("Spawned Ffmpeg with command: " + command)})
       .on("progress", function (progress) {console.log(`Processing: ${progress.timemark.split(":")[2].split(".")[0]}.${String(progress.timemark.split(":")[2].split(".")[1]).padEnd(3, "0")}s`)}) //00:00:04.50 -> 4.500s
       .on("error", function (err) {
-        console.log("Ffmpeg error: " + err.message)
+        console.log(`Ffmpeg error: ${err.message}`)
         reject(new Error(`Ffmpeg error: ${err.message}`))
-        throw new Error(`Error: ${err.message}`)
+        throw new Error(err.message)
       })
       .on("end", async function () {
         console.log("Processing finished!")
@@ -113,15 +113,15 @@ async function recognize(filepath) {
     data["track"]["artist"] = response["track"]["subtitle"]
     data["track"]["album"] = {}
     data["track"]["album"]["cover"] = response["track"]["images"]["coverart"]
-    const metadtataAlbumTitle = response.track.sections[0].metadata.filter(e => e.title === "Album")
-    data["track"]["album"]["title"] = metadtataAlbumTitle.length > 0 ? metadtataAlbumTitle[0].text : "-"
-    const metadtataAlbumYear = response.track.sections[0].metadata.filter(e => e.title === "Released")
-    data["track"]["album"]["year"] = metadtataAlbumYear.length > 0 ? metadtataAlbumYear[0].text : "-"
+    const metadataAlbumTitle = response.track.sections[0].metadata.filter(e => e.title === "Album")
+    data["track"]["album"]["title"] = metadataAlbumTitle.length > 0 ? metadataAlbumTitle[0].text : "-"
+    const metadataAlbumYear = response.track.sections[0].metadata.filter(e => e.title === "Released")
+    data["track"]["album"]["year"] = metadataAlbumYear.length > 0 ? metadataAlbumYear[0].text : "-"
     console.log("Music data found!")
     return data
   } catch (err) {
     console.log(`Shazam error: ${err}`)
-    throw new Error("Error: Data not found :(")
+    throw new Error("400")  // Bad request
   }
 }
 
@@ -144,10 +144,11 @@ app.get("/api/v1/id/:query", async (req, res) => {
 
     return res.status(200).json(data)
   } catch (err) {
-    // return res.status(500).send(err.message)
-    if (String(err.message).includes("radio")) { return res.status(404).json({"message": err.message}) } // search error
-    if (String(err.message).includes("data")) { return res.status(400).json({"message": err.message}) }  // shazam error
-    return res.status(500).json({"message": err.message})  // ffmpeg error
+    switch (err.message) {
+      case "404": return res.status(404).json({"message": "Error: Could not find the radio"}) // search error
+      case "400": return res.status(400).json({"message": "Error: Data not found :("}) // shazam error
+      default:    return res.status(500).json({"message": `Error: ${err.message}`})  // ffmpeg error
+    }
   }
 })
 
