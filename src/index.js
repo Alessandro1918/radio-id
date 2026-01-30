@@ -68,7 +68,7 @@ function record(streamURL) {
   // "./tmp/records": localhost
   //  "/tmp/records": vercel
   //   "tmp/records": localhost
-  const pathRecord = "./tmp/record.m4a"
+  const pathRecord = "/tmp/record.m4a"
 
   return new Promise((resolve, reject) => {
 
@@ -126,7 +126,7 @@ async function recognize(filepath) {
 }
 
 // Test
-app.get("/", (req, res) => {return res.send("Hello, world!")})
+app.get("/", (_, res) => {return res.send("Hello, world!")})
 
 // Record audio file from stream's URL, and try to recognise the music playing on it
 // Usage: http://localhost:4000/api/v1/id/name=kiss_fm&countrycode=BR
@@ -145,8 +145,8 @@ app.get("/api/v1/id/:query", async (req, res) => {
     return res.status(200).json(data)
   } catch (err) {
     switch (err.message) {
-      case "404": return res.status(404).json({"message": "Error: Could not find the radio"}) // search error
-      case "400": return res.status(400).json({"message": "Error: Data not found :("}) // shazam error
+      case "404": return res.status(404).json({"message": "Error: Could not find the radio!"}) // search error
+      case "400": return res.status(400).json({"message": "Error: Music data not found :("}) // shazam error
       default:    return res.status(500).json({"message": `Error: ${err.message}`})  // ffmpeg error
     }
   }
