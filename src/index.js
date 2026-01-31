@@ -1,6 +1,3 @@
-//Step 4 — Processing Media With ffmpeg.wasm
-//https://www.digitalocean.com/community/tutorials/how-to-build-a-media-processing-api-in-node-js-with-express-and-ffmpeg-wasm
-
 //Requires:
 // require("dotenv").config()
 // const express = require("express")
@@ -13,7 +10,7 @@
 // const RadioBrowser = require('radio-browser')
 
 //Imports (package.json: "type": "module"):
-// import 'dotenv/config'
+import "dotenv/config"
 import express from "express"
 import { Shazam } from "node-shazam"
 // import * as fs from "fs"
@@ -22,6 +19,9 @@ import ffmpeg from "fluent-ffmpeg"       //V1 - https://www.npmjs.com/package/fl
 import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 import RadioBrowser from "radio-browser"
+import { db } from "./db/connection.js"
+import { schema } from "./db/schema/index.js"
+import { eq, desc } from "drizzle-orm"
 
 // console.log(ffmpegInstaller.path)
 // console.log(ffmpegInstaller.url)
@@ -61,12 +61,13 @@ async function search(query) {
   }
 }
 
-// Given a URL stream, records a few seconds of it in a local audio file 
+// Given a URL stream, records a few seconds of it in a local audio file
+// Step 4 — Processing Media With ffmpeg.wasm: https://www.digitalocean.com/community/tutorials/how-to-build-a-media-processing-api-in-node-js-with-express-and-ffmpeg-wasm
 function record(streamURL) {
 
-  //Temp dir notation:
+  // Temp dir notation:
   // "./tmp/records": localhost
-  //  "/tmp/records": vercel
+  //  "/tmp/records": localhost & vercel
   //   "tmp/records": localhost
   const pathRecord = "/tmp/record.m4a"
 
@@ -101,7 +102,7 @@ function record(streamURL) {
   })
 }
 
-//Uses "node-shazam" package to recognise data (artist, song title) from an audio file
+// Uses "node-shazam" package to recognise data (artist, song title) from an audio file
 async function recognize(filepath) {
   const response = await shazam.recognise(filepath)
   
@@ -125,10 +126,33 @@ async function recognize(filepath) {
   }
 }
 
-// Test
+// Adds a db record with the identified music details
+async function saveId(radio, artist, title) {
+  const result = await db
+    .insert(schema.ids)
+    .values({ 
+      radio: radio,
+      music_artist: artist,
+      music_title: title
+    })
+    .returning()
+  return result
+}
+
+// Returns the db record of the last music identified for this radio station
+async function getLastId(radio) {
+  const result = await db
+    .select()
+    .from(schema.ids)
+    .where(eq(schema.ids.radio, radio))
+    .orderBy(desc(schema.ids.timestamp))
+  return result[0]
+}
+
+// Health check
 app.get("/", (_, res) => {return res.send("Hello, world!")})
 
-// Record audio file from stream's URL, and try to recognise the music playing on it
+// Record audio file from the stream's URL, and try to recognise the music playing on it
 // Usage: http://localhost:4000/api/v1/id/name=kiss_fm&countrycode=BR
 app.get("/api/v1/id/:query", async (req, res) => {
   try {
@@ -141,6 +165,11 @@ app.get("/api/v1/id/:query", async (req, res) => {
     const data = await recognize(pathRecord)
 
     data["radio"] = radio
+
+    const lastId = getLastId(data.radio.name)
+    if (data.track.title != (await lastId).music_title) {
+      await saveId(data.radio.name, data.track.artist, data.track.title)
+    }
 
     return res.status(200).json(data)
   } catch (err) {

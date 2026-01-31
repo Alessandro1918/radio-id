@@ -1,7 +1,7 @@
 ###
-//Health check
+# Health check
 GET http://localhost:4000/
 
 ###
-//Record audio file from stream's URL and try to recognise the song based on that audio file
+# Record audio file from stream's URL and try to recognise the song based on that audio file
 GET http://localhost:4000/api/v1/id/name=kiss_fm&countrycode=BR
