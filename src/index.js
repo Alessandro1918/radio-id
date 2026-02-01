@@ -19,9 +19,6 @@ import ffmpeg from "fluent-ffmpeg"       //V1 - https://www.npmjs.com/package/fl
 import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 import RadioBrowser from "radio-browser"
-import { db } from "./db/connection.js"
-import { schema } from "./db/schema/index.js"
-import { eq, desc } from "drizzle-orm"
 
 // console.log(ffmpegInstaller.path)
 // console.log(ffmpegInstaller.url)
@@ -126,29 +123,6 @@ async function recognize(filepath) {
   }
 }
 
-// Adds a db record with the identified music details
-async function saveId(radio, artist, title) {
-  const result = await db
-    .insert(schema.ids)
-    .values({ 
-      radio: radio,
-      music_artist: artist,
-      music_title: title
-    })
-    .returning()
-  return result
-}
-
-// Returns the db record of the last music identified for this radio station
-async function getLastId(radio) {
-  const result = await db
-    .select()
-    .from(schema.ids)
-    .where(eq(schema.ids.radio, radio))
-    .orderBy(desc(schema.ids.timestamp))
-  return result[0]
-}
-
 // Health check
 app.get("/", (_, res) => {return res.send("Hello, world!")})
 
@@ -165,11 +139,6 @@ app.get("/api/v1/id/:query", async (req, res) => {
     const data = await recognize(pathRecord)
 
     data["radio"] = radio
-
-    const lastId = getLastId(data.radio.name)
-    if (data.track.title != (await lastId).music_title) {
-      await saveId(data.radio.name, data.track.artist, data.track.title)
-    }
 
     return res.status(200).json(data)
   } catch (err) {
