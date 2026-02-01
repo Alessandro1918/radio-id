@@ -5,25 +5,20 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "compose_dev": "npm install && nodemon src/index.js",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "compose_dev": "npm install && nodemon src/index.js"
   },
   "author": "Ale B. C.",
   "license": "ISC",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "dotenv": "^17.2.3",
-    "drizzle-orm": "^0.45.1",
     "express": "^4.19.2",
     "fluent-ffmpeg": "^2.1.2",
     "node-shazam": "^1.2.3",
-    "postgres": "^3.4.8",
     "radio-browser": "^2.2.3"
   },
   "type": "module",
   "devDependencies": {
-    "drizzle-kit": "^0.31.8",
     "nodemon": "^3.1.0"
   }
 }
