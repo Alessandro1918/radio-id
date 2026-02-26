@@ -28,6 +28,15 @@ const app = express()
 const shazam = new Shazam()
 const PORT = process.env.PORT || 4000
 
+// query: "name=kiss_fm&countrycode=BR" => filters: { name: 'kiss_fm', countrycode: 'BR' }
+function parseQuery(query) {
+  const filters = {}
+  query.split("&").map(param => {
+    filters[param.split("=")[0]] = param.split("=")[1]
+  })
+  return filters
+}
+
 // Given a query for a radio ("name=kiss_fm" for "Kiss FM", for ex.), returns the radio info, like the stream URL ("https://cloud2.cdnseguro.com:20000/;", for ex.)
 async function search(query) {
   try {
@@ -36,13 +45,10 @@ async function search(query) {
     // Example of working servers: https://fi1.api.radio-browser.info, https://de2.api.radio-browser.info
     // Advanced search docs: https://de1.api.radio-browser.info/#Advanced_station_search 
     // Advanced search example: http://de1.api.radio-browser.info/json/stations/search?name=kiss_FM&countrycode=BR
-    // query: "name=kiss_fm&countrycode=BR" => filters: { name: 'kiss_fm', countrycode: 'BR' }
-    const filters = {}
-    query.split("&").map(param => {
-      filters[param.split("=")[0]] = param.split("=")[1]
-    })
+    const filters = parseQuery(query)
     const data = await RadioBrowser.searchStations(filters)
     const radio = {
+      id: data[0].stationuuid,
       name: data[0].name,
       state: data[0].state,
       countrycode: data[0].countrycode,
@@ -50,6 +56,7 @@ async function search(query) {
       site: data[0].homepage,
       icon: data[0].favicon
     }
+    // data.map((e, i) => {console.log(`Radio #${i+1}: `, e)})
     console.log(`Radio 1/${data.length}: ${radio.name} (${radio.state}-${radio.countrycode})`) // Radio 1/3: Rádio Kiss FM - 92.5 (São Paulo-BR)
     return radio
   } catch (err) {
@@ -127,7 +134,6 @@ async function recognize(filepath) {
 app.get("/", (_, res) => {return res.send("Hello, world!")})
 
 // Record audio file from the stream's URL, and try to recognise the music playing on it
-// Usage: http://localhost:4000/api/v1/id/name=kiss_fm&countrycode=BR
 app.get("/api/v1/id/:query", async (req, res) => {
   try {
     const query = req.params.query
