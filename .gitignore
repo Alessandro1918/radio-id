@@ -1,6 +1,5 @@
 node_modules
 tmp
-/src/db/migrations
 
 .DS_Store
 .env
