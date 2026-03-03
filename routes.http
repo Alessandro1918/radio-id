@@ -3,5 +3,9 @@
 GET http://localhost:4000/
 
 ###
-# Record audio file from stream's URL and try to recognise the song based on that audio file
+# Search for a radio by a query, record an audio file from stream's URL and try to recognise the song based on that audio file
 GET http://localhost:4000/api/v1/id/name=kiss_fm&countrycode=BR
+
+###
+# Search for a radio by an id, record an audio file from stream's URL and try to recognise the song based on that audio file
+GET http://localhost:4000/api/v2/id/f0d81ba6-285c-4b93-97c9-4398d20c7797
