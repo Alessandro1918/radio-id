@@ -133,12 +133,38 @@ async function recognize(filepath) {
 // Health check
 app.get("/", (_, res) => {return res.send("Hello, world!")})
 
-// Record audio file from the stream's URL, and try to recognise the music playing on it
+// Search for a radio by a query, record an audio file from the stream's URL, and try to recognise the music playing on it
 app.get("/api/v1/id/:query", async (req, res) => {
   try {
     const query = req.params.query
 
     const radio = await search(query)
+
+    const pathRecord = await record(radio.stream)
+
+    const data = await recognize(pathRecord)
+
+    data["radio"] = radio
+
+    return res.status(200).json(data)
+  } catch (err) {
+    switch (err.message) {
+      case "404": return res.status(404).json({"message": "Error: Could not find the radio!"}) // search error
+      case "400": return res.status(400).json({"message": "Error: Music data not found :("}) // shazam error
+      default:    return res.status(500).json({"message": `Error: ${err.message}`})  // ffmpeg error
+    }
+  }
+})
+
+// Search for a radio by an id, record an audio file from the stream's URL, and try to recognise the music playing on it
+app.get("/api/v2/id/:radioId", async (req, res) => {
+  try {
+    const radioId = req.params.radioId
+
+    // const radio = await search(query)
+    const response = await fetch(`https://online-radio-id.vercel.app/api/radio/${radioId}`)
+    const result = await response.json()
+    const radio = result
 
     const pathRecord = await record(radio.stream)
 
