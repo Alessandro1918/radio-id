@@ -61,7 +61,7 @@ async function search(query) {
     return radio
   } catch (err) {
     console.log("Search error: Could not find the radio")
-    throw new Error("404")  // Not found
+    throw new Error("400")  // Bad request
   }
 }
 
@@ -121,11 +121,11 @@ async function recognize(filepath) {
     data["track"]["album"]["title"] = metadataAlbumTitle.length > 0 ? metadataAlbumTitle[0].text : "-"
     const metadataAlbumYear = response.track.sections[0].metadata.filter(e => e.title === "Released")
     data["track"]["album"]["year"] = metadataAlbumYear.length > 0 ? metadataAlbumYear[0].text : "-"
-    console.log("Music data found!")
+    console.log(`Music found! ${data["track"]["artist"]} - ${data["track"]["title"]}`)
     return data
   } catch (err) {
     console.log(`Shazam error: ${err}`)
-    throw new Error("204")  // No Content
+    throw new Error("404")  // Not found
   }
 }
 
@@ -148,8 +148,8 @@ app.get("/api/v1/id/:query", async (req, res) => {
     return res.status(200).json(data)
   } catch (err) {
     switch (err.message) {
-      case "404": return res.status(404).json({"message": "Error: Could not find the radio!"}) // search error
-      case "204": return res.status(204).json({"message": "Error: Music not recognized :("}) // shazam error
+      case "400": return res.status(400).json({"message": "Error: Could not find the radio!"}) // search error
+      case "404": return res.status(404).json({"message": "Error: Music not recognized :("}) // shazam error
       default:    return res.status(500).json({"message": `Error: ${err.message}`})        // ffmpeg error
     }
   }
@@ -177,8 +177,8 @@ app.get("/api/v2/id/:radioId", async (req, res) => {
     return res.status(200).json(data)
   } catch (err) {
     switch (err.message) {
-      case "404": return res.status(404).json({"message": "Error: Could not find the radio!"}) // search error
-      case "204": return res.status(204).json({"message": "Error: Music not recognized :("}) // shazam error
+      case "400": return res.status(400).json({"message": "Error: Could not find the radio!"}) // search error
+      case "404": return res.status(404).json({"message": "Error: Music not recognized :("}) // shazam error
       default:    return res.status(500).json({"message": `Error: ${err.message}`})        // ffmpeg error
     }
   }
