@@ -109,7 +109,6 @@ function record(streamURL) {
 // Uses "node-shazam" package to recognise data (artist, song title) from an audio file
 async function recognize(filepath) {
   const response = await shazam.recognise(filepath)
-  
   try {
     const data = {}
     data["timestamp"] = response["timestamp"]
@@ -126,7 +125,7 @@ async function recognize(filepath) {
     return data
   } catch (err) {
     console.log(`Shazam error: ${err}`)
-    throw new Error("400")  // Bad request
+    throw new Error("204")  // No Content
   }
 }
 
@@ -150,8 +149,8 @@ app.get("/api/v1/id/:query", async (req, res) => {
   } catch (err) {
     switch (err.message) {
       case "404": return res.status(404).json({"message": "Error: Could not find the radio!"}) // search error
-      case "400": return res.status(400).json({"message": "Error: Music data not found :("}) // shazam error
-      default:    return res.status(500).json({"message": `Error: ${err.message}`})  // ffmpeg error
+      case "204": return res.status(204).json({"message": "Error: Music not recognized :("}) // shazam error
+      default:    return res.status(500).json({"message": `Error: ${err.message}`})        // ffmpeg error
     }
   }
 })
@@ -165,6 +164,9 @@ app.get("/api/v2/id/:radioId", async (req, res) => {
     const response = await fetch(`https://online-radio-id.vercel.app/api/radio/${radioId}`)
     const result = await response.json()
     const radio = result
+    if (response.status == 404) {
+      throw new Error("404")  // Not found
+    }
 
     const pathRecord = await record(radio.stream)
 
@@ -176,8 +178,8 @@ app.get("/api/v2/id/:radioId", async (req, res) => {
   } catch (err) {
     switch (err.message) {
       case "404": return res.status(404).json({"message": "Error: Could not find the radio!"}) // search error
-      case "400": return res.status(400).json({"message": "Error: Music data not found :("}) // shazam error
-      default:    return res.status(500).json({"message": `Error: ${err.message}`})  // ffmpeg error
+      case "204": return res.status(204).json({"message": "Error: Music not recognized :("}) // shazam error
+      default:    return res.status(500).json({"message": `Error: ${err.message}`})        // ffmpeg error
     }
   }
 })
