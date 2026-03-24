@@ -47,7 +47,7 @@ Esse projeto utiliza o framework [ffmpeg](https://ffmpeg.org), ferramenta que de
 baseURL Dev: <code>http://localhost:4000</code></br>
 baseURL Prod: <code>https://radio-id.vercel.app</code></br>
 query: <code>name=radio_name&countrycode=XX</code> (Ex: <code>name=kiss_fm&countrycode=BR</code>)</br>
-#### GET <code>{baseURL}/api/v1/id/{query}</code>
+#### GET <code>{baseURL}/api/v1/id?{query}</code>
 (OBS: Aguarde até 5s para a identificação da música)
 #### Output:
 ```json
@@ -86,7 +86,7 @@ query: <code>name=radio_name&countrycode=XX</code> (Ex: <code>name=kiss_fm&count
     Kiss FM - São Paulo, BR 🇧🇷
   </a>
 Ouça agora: <code>https://tunein.com/radio/Kiss-FM-São-Paulo-1021-s6165/</code></br>
-Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id/name=kiss_fm&countrycode=BR](https://radio-id.vercel.app/api/v1/id/name=kiss_fm&countrycode=BR)</code>
+Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id?name=kiss_fm&countrycode=BR](https://radio-id.vercel.app/api/v1/id?name=kiss_fm&countrycode=BR)</code>
 
 <!-- 89 -->
 - <a href="https://tunein.com/89fmaradiorock/">
@@ -98,7 +98,7 @@ Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id/name=kiss_fm&countryc
     89 - A Rádio Rock - São Paulo, BR 🇧🇷
   </a>
 Ouça agora: <code>https://tunein.com/89fmaradiorock/</code></br>
-Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id/name=89_fm&countrycode=BR](https://radio-id.vercel.app/api/v1/id/name=89_fm&countrycode=BR)</code>
+Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id?name=89_fm&countrycode=BR](https://radio-id.vercel.app/api/v1/id?name=89_fm&countrycode=BR)</code>
 
 <!-- FOX ROCK -->
 - <a href="https://tunein.com/radio/RADIO-FOX-ROCK-879-s120826/">
@@ -110,7 +110,7 @@ Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id/name=89_fm&countrycod
     Fox Rock - Sorocaba, BR 🇧🇷
   </a>
 Ouça agora: <code>https://tunein.com/radio/RADIO-FOX-ROCK-879-s120826/</code></br>
-Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id/name=fox_rock&countrycode=BR](https://radio-id.vercel.app/api/v1/id/name=fox_rock&countrycode=BR)</code>
+Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id?name=fox_rock&countrycode=BR](https://radio-id.vercel.app/api/v1/id?name=fox_rock&countrycode=BR)</code>
 
 <!-- RADIO CITY -->
 - <a href="https://tunein.com/radio/Radio-City-994-s14840/">
@@ -122,4 +122,4 @@ Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id/name=fox_rock&country
     Radio City - Helsinki, Finlândia 🇫🇮
   </a>
 Ouça agora: <code>https://tunein.com/radio/Radio-City-994-s14840/</code></br>
-Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id/name=radio_city&countrycode=FI](https://radio-id.vercel.app/api/v1/id/name=radio_city&countrycode=FI)</code>
+Tocando agora:<code>[https://radio-id.vercel.app/api/v1/id?name=radio_city&countrycode=FI](https://radio-id.vercel.app/api/v1/id?name=radio_city&countrycode=FI)</code>
