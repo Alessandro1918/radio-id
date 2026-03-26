@@ -156,13 +156,12 @@ app.get("/api/v2/id/:radioId", async (req, res) => {
   try {
     const radioId = req.params.radioId
 
-    // const radio = await search(query)
     const response = await fetch(`https://online-radio-id.vercel.app/api/radio/${radioId}`)
+    if (response.status == 400) {
+      throw new Error("400")  // Bad request
+    }
     const result = await response.json()
     const radio = result
-    if (response.status == 404) {
-      throw new Error("404")  // Not found
-    }
 
     const pathRecord = await record(radio.stream)
 
