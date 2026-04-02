@@ -3,6 +3,10 @@
 GET http://localhost:4000/
 
 ###
+# Search for a radio by a query
+GET http://localhost:4000/api/v1/radios?name=kiss_fm&countrycode=BR
+
+###
 # Search for a radio by a query, record an audio file from the stream's URL and try to recognise the song based on that audio file
 GET http://localhost:4000/api/v1/id?name=kiss_fm&countrycode=BR
 

@@ -127,6 +127,19 @@ async function recognize(filepath) {
 // Health check
 app.get("/", (_, res) => {return res.send("Hello, world!")})
 
+// Search for a radio by a query
+app.get("/api/v1/radios?:query", async (req, res) => {
+  try {
+    const query = req.query // { name: 'kiss_fm', countrycode: 'BR' }
+
+    const radios = await search(query)
+
+    return res.status(200).json(radios)
+  } catch (err) {
+    return res.status(400).json({"message": "Error: Could not find any radios!"}) // search error
+  }
+})
+
 // Search for a radio by a query, record an audio file from the stream's URL, and try to recognise the music playing on it
 app.get("/api/v1/id?:query", async (req, res) => {
   try {
