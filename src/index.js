@@ -1,24 +1,26 @@
 //Requires:
 // require("dotenv").config()
 // const express = require("express")
-//node-shazam   //doesn"t have a "require" option
+// const RadioBrowser = require('radio-browser')
 // var fs = require("fs")
 // var path = require("path")
 // const ffmpeg = require("fluent-ffmpeg")
 // const ffmpegInstaller = require("@ffmpeg-installer/ffmpeg")
 // ffmpeg.setFfmpegPath(ffmpegInstaller.path)
-// const RadioBrowser = require('radio-browser')
+// node-shazam -> doesn"t have a "require" option
 
 //Imports (package.json: "type": "module"):
 import "dotenv/config"
 import express from "express"
-import { Shazam } from "node-shazam"
+import RadioBrowser from "radio-browser"
 // import * as fs from "fs"
 // import * as path from "path"
-import ffmpeg from "fluent-ffmpeg"       //V1 - https://www.npmjs.com/package/fluent-ffmpeg
-import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"
-ffmpeg.setFfmpegPath(ffmpegInstaller.path)
-import RadioBrowser from "radio-browser"
+import ffmpeg from "fluent-ffmpeg"    // https://www.npmjs.com/package/fluent-ffmpeg
+// import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"   // v1
+// ffmpeg.setFfmpegPath(ffmpegInstaller.path)
+import ffmpegPath from "ffmpeg-static"                      // v2
+ffmpeg.setFfmpegPath(ffmpegPath)
+import { Shazam } from "node-shazam"
 
 // console.log(ffmpegInstaller.path)
 // console.log(ffmpegInstaller.url)
@@ -92,7 +94,6 @@ function record(streamURL) {
       .on("error", function (err) {
         console.log(`Ffmpeg error: ${err.message}`)
         reject(new Error(`Ffmpeg error: ${err.message}`))
-        throw new Error(err.message)
       })
       .on("end", async function () {
         console.log("Processing finished!")
