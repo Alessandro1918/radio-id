@@ -5,11 +5,12 @@ WORKDIR /usr/app
 COPY package*.json ./
 
 # Install ffmpeg in the container:
-RUN apt-get update
-RUN apt-get install -y ffmpeg
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN npm install
 
 COPY . .
 
-CMD [ "npm", "run", "compose_dev" ]
+CMD [ "npm", "run", "start" ]

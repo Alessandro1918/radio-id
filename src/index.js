@@ -16,10 +16,11 @@ import RadioBrowser from "radio-browser"
 // import * as fs from "fs"
 // import * as path from "path"
 import ffmpeg from "fluent-ffmpeg"    // https://www.npmjs.com/package/fluent-ffmpeg
-// import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"   // v1
-// ffmpeg.setFfmpegPath(ffmpegInstaller.path)
-import ffmpegPath from "ffmpeg-static"                      // v2
-ffmpeg.setFfmpegPath(ffmpegPath)
+import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"   // v1 - works on localhost and Docker
+ffmpeg.setFfmpegPath(ffmpegInstaller.path)
+// import ffmpegPath from "ffmpeg-static"     // v2 - localhost only
+// ffmpeg.setFfmpegPath(ffmpegPath)
+// ffmpeg.setFfmpegPath("/usr/bin/ffmpeg")    // v3 - Docker only - could be removed; fluent-ffmpeg often detects system ffmpeg 
 import { Shazam } from "node-shazam"
 
 // console.log(ffmpegInstaller.path)

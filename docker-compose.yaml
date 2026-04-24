@@ -1,3 +1,4 @@
+# docker-compose.yaml file: aux to Dockerfile. Last deploy used only Dockerfile
 version: "3.7"
 
 services:
